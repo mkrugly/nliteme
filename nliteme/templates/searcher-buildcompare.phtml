@@ -1,0 +1,20 @@
+{% extends 'searcher.phtml' %}
+{% block mainfieldlistbefore %}
+  <div class="aes-fieldlist">
+   <div class="aes-fieldrow">
+    <div class="aes-fieldcolumn">
+     {% set colName = content['compareby'].getColumnRealName() %}
+     <div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(colName|upper)}}</div>
+     <div class="aes-fieldcolumn aes-fieldvalue">
+      {% set colVal = content['compareby'].getColumnValue() %}
+      <select class="formvalue multi fill-parent chosen-select aes-fieldvalue-content" size="5" name="{{colName}}" id="{{colName}}" data-placeholder="{{Text._('TPL_GEN_CLICK_TO_SELECT')}}">
+	{% for inx, val in content['compareby'].getColumnPredefinedValues() %}
+	<option {{ (colVal == val) ? 'selected' : '' }} {{(inx == 0) ? 'data-default=""' : '' }} value="{{val}}">{{Text._(val|upper)}}</option>
+	{% endfor %}
+      </select>
+     </div>
+    </div>     
+   </div>
+  </div>
+  <div class="aes-form-separator"></div>
+{% endblock mainfieldlistbefore %}

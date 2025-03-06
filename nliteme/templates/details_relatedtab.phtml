@@ -1,0 +1,28 @@
+<div>
+ <div class="aes-fieldlist">
+  {% for column in content['related']['columns'] %}
+    <div class="aes-fieldrow">
+	<div class="aes-fieldcolumn">
+   	 <div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(column.getColumnRealName()|upper)}}
+       {% if column.getFieldType() == 'HYPER_LINK' %} 
+        <div style="display: inline-block">
+         <a class="ui-icon ui-icon-extlink" href="{{column.getColumnValue()}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_EXT_LINK')}}"></a>
+        </div>
+       {% endif %}
+  	 </div>
+  	 <div class="aes-fieldcolumn aes-fieldvalue">
+          {% set val = column.getColumnValue() %}
+          {% if column.getValueType() == 'RELATIVE' %}
+            <div class="rate-progress-bar" style="position: relative;" data-val={{val|trim('%')}}>
+  	  	      <div class="rate-progress-bar-label" style="top:4px;font-weight:bold;left:50%;position:absolute;">{{val}}</div>	 
+  	  	    </div>
+          {% else %}
+            {{val}}
+          {% endif %}
+  	 </div> 
+	</div>
+    </div>
+  {% endfor %}
+  <div class="aes-form-separator"></div>
+ </div>
+</div>

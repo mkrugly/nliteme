@@ -1,0 +1,69 @@
+{% set pagination = content['footer'] %}
+{% if (pagination is empty or pagination.getCurrentPageIndex() == 0) %}
+<div>
+ {% if content['label'] is not empty %} 
+ <div class="toolbar-box">
+   <div class="toolbar toolbar-l">
+    <label>{{Text._(content['label'])}}
+     {% if content['numberofrecords'] is not empty %} ({{Text._(content['numberofrecords'])}}) {% endif %}
+    </label>
+   </div>
+ </div>
+ {% endif %} 
+ <div id="message-container">
+  {% if messages.getMessages()|length > 0 %}
+    <div id="message-container-messages">
+    <ul>
+    {% for message in messages.getMessages() %}
+	  <li><div class="message-info-text">{{message}}</div></li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+ </div>
+ <div>
+	<table class="{% block scrollclass %}{% endblock scrollclass %} table-row-link table-widgie table-blue fill-parent">  
+	  <thead>	
+		<tr>
+		{% if content['quicklinks'] is not empty %}
+			<th></th>
+		{% endif %}	
+	    {% for column in content['header'] %}
+			<th class='table-sorter'>
+			{% if column.is_showable() == true %}
+				{{Text._(column.getColumnRealName()|upper)}}
+			{% endif %}
+			</th>
+		{% endfor %}
+		</tr>
+	  </thead>
+	  <tbody id="table-tbody">
+{% endif %}	   
+	    {% for record in content['body'] %}
+			{% set args = record['link-args'] %}
+			 <tr>
+				{{ block('tabquicklinks', 'common_blocks.phtml') }}
+				{% for column in content['header'] %}
+				   {% if column.getColumnRealName() == 'passrate' and content['tooltip-action'] | length > 0 %}
+				    {% set tooltiplink = content['tooltip-action'] %}
+					<td class='tooltip-dynamic' data-tooltip-action="{{tooltiplink.GetServerUrl()}}{{tooltiplink.GetScriptName()}}?{{tooltiplink.GetModifiedQueryUrl(args)}}">
+				   {% else %}
+					<td>
+				   {% endif %}
+				      {% block tdtagcontent %}
+				        {{ block('hlrtabtd', 'common_blocks.phtml') }}
+					  {% endblock tdtagcontent %}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+{% if (pagination is empty or pagination.getCurrentPageIndex() == 0) %}		
+	  </tbody>
+	  <tfoot id="table-tbody-pre" class="hidden-onload"><tr><td colspan="{{content['header']|length}}"><div class="preloader" ><img src="./images/preloaderSmall.GIF" alt="loading gif" />{{Text._('TPL_LOADING')}}</div></td></tr></tfoot>
+	</table>
+   {% if pagination.getNumOfPages() > 1 %}
+    <script class="ajax-table-paging" type="text/javascript" data-container="table-tbody" type="text/javascript" data-rand="{{ random() }} "data-page-count="{{pagination.getNumOfPages()}}" data-page="{{pagination.getCurrentPageIndex()}}" data-ajax-table-link="{{pagination.getLink().GetCurrentUrl()}}"></script>
+   {% endif %}
+ </div>
+</div>
+{% endif %}

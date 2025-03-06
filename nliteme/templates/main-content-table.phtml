@@ -1,0 +1,174 @@
+<div>
+ <div id="message-container">
+  {% if messages.getMessages()|length > 0 %}
+    <div id="message-container-messages" class="fade-me-out">
+    <ul>
+    {% for message in messages.getMessages() %}
+	  <li><div class="message-info-text">{{message}}</div></li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+ </div>
+  <form action="{{link.GetCurrentUrl()}}" id="editform" method="post" class="aes-form ajax-form">
+
+   <div class="aes-form-separator"></div>
+   <fieldset class="aes-fieldset aes-fieldset-nobg">
+	<div class="toolbar-box">
+	  <div class="toolbar toolbar-l">
+		<label>{{Text._(content['label'])}} ({{Text._(content['numberofrecords'])}})</label>
+	  </div>
+	  <div class="toolbar toolbar-r">
+		<ul>
+			<li><div class="ui-icon ui-icon-trash submit-button-action button-delete-multiple" data-name="{{content['submitAction']}}.deleteList" title="{{Text._('TPL_DELETE')}}"></div></li>
+		</ul>
+	  </div>
+	</div>
+	<div id="pagination">
+     <ul>
+      {% set pagination = content['footer'] %}
+      {% if pagination.getNumOfPages() > 1 %}
+        {% if pagination.getPrevious() is empty %}
+  	    <li class="previous-off">« {{Text._('TPL_GEN_PREVIOUS')}}</li>
+        {% else %}
+  	    <li class="previous"><a href="{{pagination.getPrevious()}}" class="ajax-link">« {{Text._('TPL_GEN_PREVIOUS')}}</a></li>
+        {% endif %}
+        {% for page, link in pagination.getPaginationList %}
+  	    {% if page == (pagination.getCurrentPageIndex+1) %}
+  	    	<li class="active">{{page}}</li>
+  	    {% else %}
+  	    	<li><a href="{{link}}" class="ajax-link">{{page}}</a></li>
+  	    {% endif %}
+        {% endfor %}
+        {% if pagination.getNext() is empty %}
+  	    <li class="next-off">{{Text._('TPL_GEN_NEXT')}} »</li>
+        {% else %}
+  	    <li class="next"><a href="{{pagination.getNext()}}" class="ajax-link">{{Text._('TPL_GEN_NEXT')}} »</a></li>
+        {% endif %}
+       {% endif %} 
+     </ul>
+    </div> 	
+	<table  class="table-blue">
+	  <thead>	
+		<tr>
+			<th>
+				<input type="checkbox" id="select_all" name="checkall-toggle" value="" title="{{Text._('TPL_CHECK_ALL')}}" onclick="" />
+			</th>
+		{% if content['quicklinks'] is not empty %}
+			<th></th>
+		{% endif %}	
+	    {% for column in content['header'] %}
+			<th>
+			{% if column.is_showable() == true %}
+			    {% set sort = column.getColumnRealName() %}
+			    {% set order = 'ASC' %}
+			    {% if sort == link.GetArgFromQueryUrl('sort') %}
+			      {% if order == link.GetArgFromQueryUrl('order') %}{% set order = 'DESC' %}{% endif %}		  
+			    {% endif %}
+				{% set args = {'sort':sort,'order':order} %}
+				<a href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{link.GetModifiedQueryUrl(args)}}" class="ajax-link">{{Text._(column.getColumnRealName()|upper)}}</a>
+			{% endif %}
+			</th>
+		{% endfor %}
+		</tr>
+	  </thead>
+	  <tbody>
+	    {% for record in content['body'] %}
+			<tr>
+				<td>
+					<input type="checkbox" id="{{content['checkboxid']}}-{{record[content['checkboxid']]}}" name="{{content['checkboxid']}}[]" value="{{record[content['checkboxid']]}}" onclick=""/>									
+				</td>
+				{{ block('tabquicklinks', 'common_blocks.phtml') }}
+				{% for column in content['header'] %}
+					<td>
+					{% if record[column.getColumnRealName()] is not empty %}		
+						{% if column.is_showable() == true %}
+                            {% set realname = column.getColumnRealName() %}
+                            {% set inx = column.getColumnIndex() %}                         
+                            {% set val = record[realname] %}
+                            {% if column.is_predefined() == true %}
+                                {% set val = column.getColumnPredefinedValuebyIndex(val) %}
+                            {% endif %}
+                            
+                            {% set href_link = '' %}
+                            {% set a_attr = '' %} 
+                            {% set fieldaction = content['fieldActions'][realname] %}
+                            {% if record[fieldaction] is not empty %}
+                                {% set href_link = record[fieldaction] %}
+                                {% set a_attr = 'title="' ~ Text._('TPL_GEN_CLICK_TO_SEE_DETAILS') ~ '"' %}
+							{% elseif (fieldaction is not empty) and (val != 0) and (val matches '/^\\d+$/') %}
+								{% set href_link = fieldaction ~ val %}
+								{% set a_attr = 'title="' ~ Text._('TPL_GEN_CLICK_TO_SEE_DETAILS') ~ '"' %}
+                            {% elseif inx is not empty %}
+                                {% set inxval = record[inx] %}
+                                {% if inxval is not empty %}
+                                    {% set detailaction = content['detailActions'][inx] %}
+                                    {% if detailaction is not empty %}
+                                        {% set href_link = link.GetServerUrl() ~ link.GetScriptName() ~ '?' ~ detailaction ~ '&' ~ inx ~ '=' ~ inxval %}
+                                        {% set a_attr = 'class="tooltip-dynamic" id="' ~ inx ~ '_' ~ inxval ~ '_' ~ loop.index0 ~ random() ~ '" title="' ~ Text._('TPL_GEN_CLICK_TO_SEE_DETAILS') ~ '"' %}
+                                    {% endif %} 
+                                {% endif %}  
+                            {% endif %}
+    
+							{% if href_link is empty %}
+							{% else %}
+                               <a href="{{href_link}}" {{a_attr|raw}}>
+							{% endif %}
+                            {% if  (column.getValueType() == 'RELATIVE') and (val is iterable) %}					   
+                                {{ block('multiprogresbar', 'common_blocks.phtml') }}
+                            {% elseif (realname == 'passrate') or (column.getValueType() == 'RELATIVE') %}
+                                {{ block('progresbar', 'common_blocks.phtml') }}
+							{% elseif realname == 'extracolumn_2' and val == 0 %}
+							    N/A
+                            {% elseif realname == 'tcverdict' %} 
+                                {% set ver_inx = record[realname] %}
+                                {% if ver_inx == 0 %}
+                                    <img class="tooltip-dynamic" id="id_{{record[inx]}}_{{loop.index0}}{{ random() }}" src="./images/ok.png" style="float:none;display:block;" alt="{{val}}"/>
+                                {% else %}
+                                    <img class="tooltip-dynamic" id="id_{{record[inx]}}_{{loop.index0}}{{ random() }}" src="./images/nok.png" style="float:none;display:block;"/>
+                                    <span class="imgText">{{val}}</span>
+                                {% endif %}
+                            {% else %}
+                                {{val|raw}}
+                            {% endif %}
+							{% if href_link is empty %}
+							{% else %}	
+                               </a>
+							{% endif %}							
+                        {% endif %}
+                    {% endif %}
+					</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+	<div id="pagination">
+     <ul>
+      {% set pagination = content['footer'] %}
+      {% if pagination.getNumOfPages() > 1 %}
+        {% if pagination.getPrevious() is empty %}
+  	    <li class="previous-off">« {{Text._('TPL_GEN_PREVIOUS')}}</li>
+        {% else %}
+  	    <li class="previous"><a href="{{pagination.getPrevious()}}" class="ajax-link">« {{Text._('TPL_GEN_PREVIOUS')}}</a></li>
+        {% endif %}
+        {% for page, link in pagination.getPaginationList %}
+  	    {% if page == (pagination.getCurrentPageIndex+1) %}
+  	    	<li class="active">{{page}}</li>
+  	    {% else %}
+  	    	<li><a href="{{link}}" class="ajax-link">{{page}}</a></li>
+  	    {% endif %}
+        {% endfor %}
+        {% if pagination.getNext() is empty %}
+  	    <li class="next-off">{{Text._('TPL_GEN_NEXT')}} »</li>
+        {% else %}
+  	    <li class="next"><a href="{{pagination.getNext()}}" class="ajax-link">{{Text._('TPL_GEN_NEXT')}} »</a></li>
+        {% endif %}
+       {% endif %} 
+     </ul>
+    </div> 
+   </fieldset>
+  </form>
+
+  <div></div>
+</div>

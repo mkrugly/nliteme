@@ -1,0 +1,16 @@
+	{% for buildType, builds in leftColumn %}
+         <div id="side-submenu-wrapper">
+			  <div id="side-submenu-header">{{leftColumn.getSubmenuName(buildType)}}</div>
+			  <div id="side-submenu-list">
+			    <ul>
+				{% for build in builds %}
+				  {% if build.getUrl() is empty %}
+					<li><a href="{{leftColumn.getScriptUrl()}}?buildtype[]={{build.getType()}}&buildid[]={{build.getId()}}" title="Tested on {{build.getTestDate()}}">{{build.getName()}} </a></li>
+			      {% else %}
+					<li><a href="{{build.getUrl()}}" title="Tested on {{build.getTestDate()}}">{{build.getName()}} </a></li>
+			      {% endif %}
+			    {% endfor %}
+			    </ul>
+			  </div>
+          </div>
+	{% endfor %}

@@ -1,0 +1,32 @@
+{% extends 'main.phtml' %}
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% block headerlinks %}
+	{{ parent() }}
+{% endblock headerlinks %}
+
+{% block headerscripts %}
+	{{ parent() }}
+{% endblock headerscripts %}
+
+{% block topnav %}
+	{{ parent() }}
+{% endblock topnav %}
+
+{% block pagecontent %}
+	{% block searcher %}
+	{% endblock searcher %}
+
+	{% block leftcolumn %}
+	{% endblock leftcolumn %}
+
+	{% block maincontent %}
+		<div id="main-content">
+		{% include 'test-activities-list.phtml' %}
+		</div>	
+	{% endblock maincontent %}
+{% endblock pagecontent %}	
+
+{% block pagefooter %}
+	{{ parent() }}
+{% endblock pagefooter %}

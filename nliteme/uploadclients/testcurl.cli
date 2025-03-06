@@ -1,0 +1,11 @@
+Curl from command line:
+1. Example on how to upload results in form of json file:
+
+$ curl -X POST -H "Accept: application/json" -F "uploadtype=builds" -F "file=@./build.json;type=application/json"  http://localhost/nliteme/upload.php
+ 
+ where ./build.json is a file containing build json string
+ 
+2. Example on how to upload results in form of json string
+
+$ curl -X POST -H "Accept: application/json" -F 'uploadtype=builds' -F 'jsonstring={"0":{"buildid":{"realname":"buildid","values":["1"]},"createdate":{"realname":"createdate","values":["2013-02-15 12:03:00"]},"testdate":{"realname":"testdate","values":["1360938802"]},"build":{"realname":"build","values":["29.30_2013-02-15-12-03_V"]},"buildtype":{"realname":"buildtype","values":["0"]},"shortdescription":{"realname":"shortdescription","values":[""]},"description":{"realname":"description","values":[""]},"tcexecuted":{"realname":"tcexecuted","values":["0"]},"tcpassed":{"realname":"tcpassed","values":["0"]}}}'  http://localhost/nliteme/upload.php
+

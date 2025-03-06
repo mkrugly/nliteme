@@ -1,0 +1,79 @@
+{% extends 'base.phtml' %}
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% block headerlinks %}
+	{{ parent() }}
+{% endblock headerlinks %}
+
+{% block headerscripts %}
+	{{ parent() }}
+{% endblock headerscripts %}
+
+{% block topnav %}
+   <div id="top-nav">
+	    {% block topnavsubmenuleft %}
+	    <div id="nav-submenu-left">
+		   {% for navname, navlink in content['top-nav'] %}
+		   <div class="top-nav-el">
+		    {% if navlink is iterable %}
+			<div class=" dropdown">
+				<button class="dropbtn">{{Text._(navname)}}</button>
+				<div class="dropdown-content">
+				 {% for dropname, droplink in navlink %} 
+                   <a href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{droplink|raw}}">{{Text._(dropname)}}</a>
+                 {% endfor %}
+			   </div>
+			 </div>
+		    {% else %}
+			
+		    <a class="top-nav" id="nav-submenu-left-{{loop.index}}" href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{navlink|raw}}">{{Text._(navname)}}</a>
+
+	        {% endif %}
+			</div>
+		   {% endfor %}
+	      </ul>
+	    </div>
+	    {% endblock topnavsubmenuleft %}
+	    {% block topnavsubmenuright %}
+	    <div id="nav-submenu-right">
+	      <ul>
+	        <li><a class="top-nav pointed" id="nav-submenu-right-0" href="javascript:showHideElem('searcher','top-nav-searcher');">{{Text._('TPL_SEARCH_UC')}}</a></li>
+	      </ul>
+	    </div>
+	    {% endblock topnavsubmenuright %}
+   </div>  
+{% endblock topnav %}
+
+{% block pagecontent %}
+	{% block searcher %}
+	  {% if content['searcher'] is not empty %}
+		<div id="searcher" class="hidden-onload margin-auto loadable toggleable">
+		</div>
+		<script>$( "#searcher" ).load( "{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{content['searcher']|raw}}" );</script>
+	  {% endif %}
+	{% endblock searcher %}
+
+	{% block leftcolumn %}
+      {% if content['left-column'] is not empty %}
+		<div id="left-column" class="loadable">		
+		</div>
+		<script>$( "#left-column" ).load( "{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{content['left-column']|raw}}" );</script>
+	  {% endif %}		
+	{% endblock leftcolumn %}
+
+	{% block maincontent %}
+	  {% if content['main-content'] is not empty %} 
+		<div id="main-content-wrapper">
+		  <div class="preloader" id="main-content-pre"><img src="./images/preloaderSmall.GIF" alt="loading gif" />{{Text._('TPL_LOADING')}}</div>
+		  <div id="main-content" class="loadable fill-parent">	
+		  </div>
+		</div>
+		<script>$( "#main-content" ).load( "{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{content['main-content']|raw}}" , function() {
+$('#main-content-pre').hide();} );</script>
+	  {% endif %}
+	{% endblock maincontent %}
+{% endblock pagecontent %}	
+
+{% block pagefooter %}
+	{{ parent() }}
+{% endblock pagefooter %}

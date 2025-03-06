@@ -1,0 +1,37 @@
+{% extends 'base.phtml' %}
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% block headerlinks %}
+	{{ parent() }}
+{% endblock headerlinks %}
+
+{% block headerscripts %}
+{% endblock headerscripts %}
+
+{% block topnav %}
+{% endblock topnav %}
+
+{% block pagecontent %}
+	{% block searcher %}
+	{% endblock searcher %}
+
+	{% block leftcolumn %}
+	{% endblock leftcolumn %}
+
+	{% block maincontent %}
+		<div id="main-content" class="loadable">	
+		 <div id="message-container">
+		  <div id="message-container-messages">
+		   <ul>
+			<li><div class="message-info-text">{{Text._('TPL_NOPAGE')}}</div></li>
+		   </ul>
+		  </div>
+		 </div>
+		</div>
+	{% endblock maincontent %}
+{% endblock pagecontent %}	
+
+{% block pagefooter %}
+	{{ parent() }}
+{% endblock pagefooter %}
+

@@ -1,0 +1,172 @@
+<div>
+<div id="message-container">
+  {% if messages.getMessages()|length > 0 %}
+    <div id="message-container-messages" class="fade-me-out">
+    <ul>
+    {% for message in messages.getMessages() %}
+	  <li><div class="message-info-text">{{message}}</div></li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+</div>
+<form action="{{link.GetCurrentUrl()}}" id="editform" method="post" class="aes-form ajax-form" data-id="{{content['id'].getColumnRealName()}}">
+ <div>
+	<input type="text" style="display:none;" class="form-clearoncopy-field" name="{{content['id'].getColumnRealName()}}" value="{{content['id'].getColumnValue()}}" />
+ </div>
+<div class="aes-form-separator"></div>
+<fieldset class="aes-fieldset">
+	<div class="toolbar-box">
+	  <div class="toolbar toolbar-l">
+		<label>{{Text._(content['label'])}}: <span id="form-id-label">{{content['id'].getColumnValue()}}</span></label>
+	  </div>
+	  <div class="toolbar toolbar-r">
+		<ul>
+			<li><div class="ui-icon ui-icon-trash submit-button-action" data-name="{{content['submitAction']}}.deleteDetails" title="{{Text._('TPL_DELETE')}}"></div></li>
+			<li><div class="ui-icon ui-icon-disk submit-button-action" data-name="{{content['submitAction']}}.saveDetails" title="{{Text._('TPL_SAVE')}}"></div></li>
+			<li><div class="ui-icon ui-icon-copy submit-button-action" data-name="copyform" title="{{Text._('TPL_COPY')}}"></div></li>
+			<li><div class="ui-icon ui-icon-document submit-button-action" data-name="emptyform" title="{{Text._('TPL_NEW')}}"></div></li>
+		</ul>
+	  </div>
+	</div>
+</fieldset>
+<fieldset class="aes-fieldset">
+ <legend><label>{{Text._('TPL_DETAILS')}}</label></legend>
+ <div class="aes-fieldlist">
+   <div class="aes-fieldrow">
+     <div class="aes-fieldcolumn aes-fieldcolumn-80">
+		<div class="aes-fieldcolumn aes-fieldkey-15 aes-fieldkey-pad">{{Text._(content['name'].getColumnRealName()|upper)}}<span class="star"> *</span>
+          {% if content['name'].getColumnRealName() == 'filepath' %} 
+           	<div style="display: inline-block">
+           		<a class="ui-icon ui-icon-extlink" href="{{content['name'].getColumnValue()}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_EXT_LINK')}}"></a>
+           	</div>
+          {% endif %}
+        </div>
+		<div class="aes-fieldcolumn aes-fieldvalue-80">								
+			<input type="text" class="formvalue fill-parent aes-fieldvalue-content form-clearoncopy-field" title="" name="{{content['name'].getColumnRealName()}}" id="{{column.getColumnRealName()}}" value="{{content['name'].getColumnValue()}}" required />
+		</div>
+     </div>
+     <div class="aes-fieldcolumn aes-fieldcolumn-20">
+		{% if content['status'] is defined %}
+		<div class="aes-fieldcolumn aes-fieldvalue-90">
+		  <select class="single fill-parent chosen-select field-required" name="{{content['status'].getColumnRealName()}}" id="{{content['status'].getColumnRealName()}}" required data-placeholder="{{Text._('TPL_GEN_CLICK_TO_SELECT')}}">
+			{% if (content['status'].is_predefined() == true) and (content['status'].hasPredefinedValues() == true) %}
+			 {% for inx, val in content['status'].getColumnPredefinedValues() %}
+				<option value="{{inx}}" {{ (inx == content['status'].getColumnValue()) ? 'selected="selected"' : '' }}>{{val}}</option>
+			 {% endfor %}
+			{% endif %}
+		  </select>			   
+		</div>
+		{% endif %}
+     </div>
+   </div>
+   <div class="aes-form-separator"></div>
+   {% for column in content['itercolumns'] %}
+    {% if loop.index is not divisible by(2) %}
+	 <div class="aes-fieldrow">
+	{% endif %}
+	  <div class="aes-fieldcolumn">
+		<div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(column.getColumnRealName()|upper)}}<span class="star"> *</span>
+            {% if column.getFieldType() == 'HYPER_LINK' %} 
+           	<div style="display: inline-block">
+           		<a class="ui-icon ui-icon-extlink" href="{{column.getColumnValue()}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_EXT_LINK')}}"></a>
+           	</div>
+            {% endif %}
+		</div>
+		<div class="aes-fieldcolumn aes-fieldvalue">
+			{% if column.getFieldType() == 'DATE_PICKER' %} 								
+				<input type="text" class="formvalue fill-parent hasdatetimepicker aes-fieldvalue-content" title="" name="{{column.getColumnRealName()}}" id="datetimepicker" value="{{column.getColumnValue()}}" required />
+			{% elseif column.getFieldType() == 'INPUT_TEXT' %} 
+				<input type="text" class="formvalue fill-parent aes-fieldvalue-content" title="" name="{{column.getColumnRealName()}}" id="{{column.getColumnRealName()}}" value="{{column.getColumnValue()}}" required />			
+			{% elseif column.getFieldType() == 'HYPER_LINK' %} 
+				<input type="text" class="formvalue fill-parent aes-fieldvalue-content" title="" name="{{column.getColumnRealName()}}" id="{{column.getColumnRealName()}}" value="{{column.getColumnValue()}}" required />		
+            {% else %}
+			  {% set ajax_class = '' %}
+			  {% set data_ajax = '' %}
+			  {% if (column.getColumnJoinTab() is not empty) and (column.getColumnIndex() is not empty) and (column.is_predefined() == false ) %}
+				{% set data_ajax = column.getColumnJoinTab() ~ "." ~ column.getColumnIndex() ~ "." ~ column.getColumnRealName() %}
+				<select class="single fill-parent chosen-select field-required {{ajax_class}}" name="{{column.getColumnIndex()}}" id="{{column.getColumnIndex()}}" required data-ajax="{{data_ajax}}" data-placeholder="{{Text._('TPL_GEN_CLICK_TO_SELECT')}}">
+			  {% else %}
+			    <select class="single fill-parent chosen-select field-required" name="{{column.getColumnRealName()}}" id="{{column.getColumnRealName()}}" required data-placeholder="{{Text._('TPL_GEN_CLICK_TO_SELECT')}}">			  
+			  {% endif %}
+			  {% if column.hasPredefinedValues == true %}
+			   {% for inx, val in column.getColumnPredefinedValues() %}
+				 <option value="{{inx}}" {{ (inx == column.getColumnValue()) ? 'selected="selected"' : '' }}>{{val}}</option>
+			   {% endfor %}
+			  {% else %}
+			     <option value="" selected>{{column.getColumnValue()}}</option>
+			  {% endif %}
+			  </select>	
+			{% endif %}
+		</div>
+      </div>
+	 {% if loop.index is divisible by(2) %}
+	 </div>
+	 {% endif %}
+	 {% if (loop.last) and (loop.index is not divisible by(2)) %}
+	  <div class="aes-fieldcolumn">
+	  </div>
+	 </div> 
+	 {% endif %}
+   {% endfor %}
+ </div>
+</fieldset>
+{% if content['shortdescription'] is defined %}
+<fieldset class="aes-fieldset">
+  <legend><label>{{Text._('TPL_SHORT_DESCRIPTION')}}</label></legend>
+  <div>
+	 <textarea id="shortdescription" name="shortdescription" class="aes-description">{{content['shortdescription']}}</textarea>
+  </div>
+</fieldset>
+{% endif %}
+{% block relatedtabs %}
+{% if content['related'] is defined %}
+<div id="related">
+ <fieldset class="aes-fieldset">
+  <legend><label>{{Text._('TPL_OTHER_DETAILS')}}</label></legend>
+	<div>
+      <div class="aes-fieldlist">
+       {% for column in content['related']['columns'] %}
+         <div class="aes-fieldrow">
+		  <div class="aes-fieldcolumn">
+           <div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(column.getColumnRealName()|upper)}}
+            {% if column.getFieldType() == 'HYPER_LINK' %} 
+             <div style="display: inline-block">
+              <a class="ui-icon ui-icon-extlink" href="{{column.getColumnValue()}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_EXT_LINK')}}"></a>
+             </div>
+            {% endif %}
+       	   </div>
+       	   <div class="aes-fieldcolumn aes-fieldvalue">
+               {% set val = column.getColumnValue() %}
+               {% if column.getValueType() == 'RELATIVE' %}
+                 <div class="rate-progress-bar" style="position: relative;" data-val={{val|trim('%')}}>
+       	  	      <div class="rate-progress-bar-label" style="top:4px;font-weight:bold;left:50%;position:absolute;">{{val}}</div>	 
+       	  	    </div>
+               {% else %}
+                 {{val}}
+               {% endif %}
+       	    </div> 
+           </div>
+         </div>
+       {% endfor %}
+       <div class="aes-form-separator"></div>
+      </div>
+	{% if content['config'] is defined %}
+    {% include 'dashboardtab.phtml' %}	
+	{% endif %}
+    </div>
+ </fieldset>
+</div>
+{% endif %}
+{% endblock relatedtabs %}
+{% if content['description'] is defined %}
+<fieldset class="aes-fieldset">
+  <legend><label>{{Text._('TPL_DESCRIPTION')}}</label></legend>
+  <div>
+	 <textarea id="description" name="description" class="aes-description">{{content['description']}}</textarea>
+  </div>
+</fieldset>
+{% endif %}
+</form>
+	<div></div>
+</div>

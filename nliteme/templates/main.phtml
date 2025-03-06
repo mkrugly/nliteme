@@ -1,0 +1,55 @@
+{% extends 'base.phtml' %}
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% block headerlinks %}
+	{{ parent() }}
+{% endblock headerlinks %}
+
+{% block headerscripts %}
+	{{ parent() }}
+{% endblock headerscripts %}
+
+{% block topnav %}
+   <div id="top-nav">
+	    <div id="nav-submenu-left">
+	      <ul>
+	        <li><a class="top-nav" id="nav-submenu-left-0" href="index.php">{{Text._('TPL_GENERAL')}}</a></li>
+	        <li><a class="top-nav" id="nav-submenu-left-3" href="builds">{{Text._('TPL_BUILDS')}}</a></li>
+	        <li><a class="top-nav" id="nav-submenu-left-3" href="builds">{{Text._('TPL_BUILD_INC')}}</a></li>
+	        <li><a class="top-nav" id="nav-submenu-left-1" href="testresults.php">{{Text._('TPL_TESTRESULTS')}}</a></li>
+	        <li><a class="top-nav" id="nav-submenu-left-2" href="testcases.php">{{Text._('TPL_TESTCASES')}}</a></li>
+	        <li><a class="top-nav" id="nav-submenu-left-3" href="builds">{{Text._('TPL_TESTSUITES')}}</a></li>
+	        <li><a class="top-nav" id="nav-submenu-left-3" href="builds">{{Text._('TPL_TESTLINES')}}</a></li>
+	      </ul>
+	    </div>
+	    <div id="nav-submenu-right">
+	      <ul>
+	        <li><a class="top-nav" id="nav-submenu-right-0" href="javascript:showHideElem('searcher','top-nav-searcher');">{{Text._('TPL_SEARCH_UC')}}</a></li>
+	      </ul>
+	    </div>
+   </div>  
+{% endblock topnav %}
+
+{% block pagecontent %}
+	{% block searcher %}
+		<div id="searcher">
+		{% include 'searcher.phtml' %}
+		</div>	
+	{% endblock searcher %}
+
+	{% block leftcolumn %}
+		<div id="left-column">			
+		{% include 'left-column.phtml' %}
+		</div>			
+	{% endblock leftcolumn %}
+
+	{% block maincontent %}
+		<div id="main-content">
+		{% include 'main-content-table.phtml' %}
+		</div>	
+	{% endblock maincontent %}
+{% endblock pagecontent %}	
+
+{% block pagefooter %}
+	{{ parent() }}
+{% endblock pagefooter %}

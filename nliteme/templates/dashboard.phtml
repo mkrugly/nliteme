@@ -1,0 +1,24 @@
+<div>
+ <div id="message-container">
+  {% if messages.getMessages()|length > 0 %}
+    <div id="message-container-messages">
+    <ul>
+    {% for message in messages.getMessages() %}
+	  <li><div class="message-info-text">{{message}}</div></li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+ </div>
+ {% block dashboard %}
+	<!--<div id="dashboard-title">{{content.getName()}}</div>-->
+	<div id="dashboard-tabs" data-active="{{content['defaultTab']}}">
+	 <ul>
+	  {% for inx,tab in content['config'].getDashboardTabList() %}
+	   {{ link.SetArgFromQueryUrl('tab',inx) }}
+	   <li><a href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{link.GetQueryUrl()}}">{{tab.getName()}}</a></li>
+	  {% endfor %}
+	 </ul>	
+	</div>
+ {% endblock dashboard %}
+</div>

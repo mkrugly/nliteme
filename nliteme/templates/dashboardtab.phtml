@@ -1,0 +1,27 @@
+<div>
+	{% set column_width = (content['config'].getDashboardColumnList().count() > 0) ? (100/content['config'].getDashboardColumnList().count()) : 100 %}
+	{% for column in content['config'].getDashboardColumnList() %}
+	{% set column_inx = loop.index %}
+	<div id="dashboard-column-{{content['tabIndex']}}-{{column_inx}}" class="dashboard-column" style="width:{{column_width}}%">
+		{% for widget in column.getWidgetConfigList() %}
+		<div class="widgie" id="widget-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}">
+			<div class="widgie-header">{{ (widget.getTitle() is not empty) ? widget.getTitle() : Text._(widget.getName()|upper) }}</div>
+			{% if widget.is_useiframe() == true %}
+			<div class="widgie-content">
+				<!--<div class="widgie-preloader" id="widget-content-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}-pre"><img src="./images/preloaderSmall.GIF" alt="loading gif" />{{Text._('TPL_LOADING')}}</div>-->
+				<iframe class="widgie-iframe" id="widget-content-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}" src="{{widget.getUrl()|raw}}" width="100%" frameBorder="0" seamless></iframe>
+			</div> 
+			{% else %}
+			<div class="widgie-content">
+				<div class="widgie-preloader" id="widget-content-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}-pre"><img src="./images/preloaderSmall.GIF" alt="loading gif" />{{Text._('TPL_LOADING')}}</div>
+				<div id="widget-content-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}"></div>			   
+			</div>
+			<script>$( "#widget-content-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}" ).load( "{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{widget.getUrl()|raw()}}", function() {$('#widget-content-{{content['tabIndex']}}-{{column_inx}}-{{loop.index}}-pre').hide();} );
+			</script>
+			{% endif %} 
+		</div>
+		{% endfor %}
+	</div>
+	{% endfor %}
+	<div style="clear:both"></div>
+</div>

@@ -1,0 +1,71 @@
+<div>
+ <div id="message-container">
+  {% if messages.getMessages()|length > 0 %}
+    <div id="message-container-messages">
+    <ul>
+    {% for message in messages.getMessages() %}
+	  <li><div class="message-info-text">{{message}}</div></li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+ </div>
+ <div>
+   {% if content['body'] | length > 0 %}
+	<table class="scrollable-table table-row-link table-widgie table-blue fill-parent">  
+	  <thead>	
+		<tr>
+	    {% for column in content['header'] %}
+			<th class='table-sorter'>
+			{% if column.is_showable() == true %}
+				{{Text._(column.getColumnRealName()|upper)}}
+			{% endif %}
+			</th>
+		{% endfor %}
+		</tr>
+	  </thead>
+	  <tbody>
+	    {% for record in content['body'] %}
+			{% set args = record['link-args'] %}
+			<tr class='tooltip-semistatic'>
+				{% for column in content['header'] %}
+					<td>
+					{% if record[column.getColumnRealName()] is not empty %}	
+						{% if column.is_showable() == true %}
+						 <a href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{link.GetModifiedQueryUrl(args)}}">			    
+					      {% if column.is_predefined() == true %}
+					      	{{column.getColumnPredefinedValuebyIndex(record[column.getColumnRealName()])}}
+					      {% else %}
+						    {{record[column.getColumnRealName()]}}
+						  {% endif %}
+						 </a>
+						{% endif %}
+					{% endif %}
+					</td>
+				{% endfor %}
+				<td class='tooltip-holder' style="display:none;">
+				  <table class="table-row-link table-tooltip-1 table-widgie table-blue">
+					<thead>
+					  <tr>
+						<th>{{Text._('tcverdict'|upper)}}</th>
+						<th>{{Text._('count'|upper)}}</th>
+					  </tr>
+					</thead>
+					<tbody>	
+					 {% for inx, val in content['tooltip-header'].getColumnPredefinedValues() %}
+					 {% set args = args|merge({'tcverdict':inx})%}
+					 <tr>
+						<td><a href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{link.GetModifiedQueryUrl(args)}}">{{val}}</a></td>
+						<td><a href="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{link.GetModifiedQueryUrl(args)}}">{{ (record['tcverdict'][inx]) ? record['tcverdict'][inx] : 0 }}</a></td>
+					 </tr>
+					 {% endfor %}
+					</tbody>
+				  </table>
+				</td>
+			</tr>
+		{% endfor %}
+	  </tbody>
+	</table>
+   {% endif %}  	
+ </div>
+</div>

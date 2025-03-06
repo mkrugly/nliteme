@@ -1,0 +1,35 @@
+{% extends 'main.phtml' %}
+{% block title %}{{ parent() }}{% endblock title %}
+
+{% block headerlinks %}
+	{{ parent() }}
+{% endblock headerlinks %}
+
+{% block headerscripts %}
+	{{ parent() }}
+{% endblock headerscripts %}
+
+{% block topnav %}
+	{{ parent() }}
+{% endblock topnav %}
+
+{% block pagecontent %}
+	{% block searcher %}
+		<div id="searcher">
+		{% include 'searcher.phtml' %}
+		</div>	
+	{% endblock searcher %}
+
+	{% block leftcolumn %}
+	{% endblock leftcolumn %}
+
+	{% block maincontent %}
+		<div id="main-content">
+		{% include 'main-content-table.phtml' %}
+		</div>	
+	{% endblock maincontent %}
+{% endblock pagecontent %}	
+
+{% block pagefooter %}
+	{{ parent() }}
+{% endblock pagefooter %}

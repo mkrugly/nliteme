@@ -1,0 +1,67 @@
+<form action="{{link.GetServerUrl()}}{{link.GetScriptName()}}?{{link.GetQueryUrl()}}" id="editform" method="get" class="aes-form ajax-form">
+<div class="aes-form-separator"></div>
+{% block mainfieldset %}
+ <fieldset class="aes-fieldset">
+  {% block mainfieldlistbefore %}
+  {% endblock mainfieldlistbefore %}
+  {% block mainfieldlist %}
+  <div class="aes-fieldlist">
+   {% for column in content['inputs'] %}
+    {% if loop.index is not divisible by(2) %}
+	 <div class="aes-fieldrow">
+	{% endif %}
+	 {% if column.getSearcherFieldType() == 'DATE_PICKER' %}
+	    <div class="aes-fieldcolumn">
+	 	 <div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(column.getColumnRealName()|upper)}}</div>
+	 	 <div class="aes-fieldcolumn aes-fieldvalue">				
+	 	   <input type="text" class="formvalue fill-parent hasdatetimepicker aes-fieldvalue-content" title="" name="{{column.getColumnRealName()}}" id="{{column.getColumnRealName()}}" value="{{column.getColumnValue()}}"/>
+	 	 </div>
+	    </div>
+	 {% elseif column.getSearcherFieldType() == 'SELECT_MULTIPLE' %}
+	    <div class="aes-fieldcolumn">
+	 	 <div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(column.getColumnRealName()|upper)}}</div>
+	 	 <div class="aes-fieldcolumn aes-fieldvalue">				
+		  {% if column.getColumnPredefinedValues()|length  > 20 %}
+			{% set selectSize = 20 %}
+		  {% else %}
+			{% set selectSize = 5 %}
+		  {% endif %} 
+			{% set colVal = column.getColumnValue() %}
+			<select class="formvalue multi fill-parent chosen-select aes-fieldvalue-content" size="{{selectSize}}" name="{{column.is_predefined() == true ? column.getColumnRealName() : column.getColumnIndex()}}[]" id="{{column.getColumnRealName()}}" multiple="multiple" data-placeholder="{{Text._('TPL_GEN_CLICK_TO_SELECT')}}">
+			  <option value="" ></option>
+			  {% for inx, val in column.getColumnPredefinedValues() %}
+			    <option {{ (colVal is not empty and inx in colVal) ? 'selected' : '' }} value="{{inx}}">{{val}}</option>
+			  {% endfor %}
+			</select>
+	 	 </div>
+	    </div>
+	 {% else %}
+	    <div class="aes-fieldcolumn">
+	 	 <div class="aes-fieldcolumn aes-fieldkey aes-fieldkey-pad">{{Text._(column.getColumnRealName()|upper)}}</div>
+	 	 <div class="aes-fieldcolumn aes-fieldvalue">				
+	 	   <input type="text" class="formvalue autocompletable fill-parent aes-fieldvalue-content" title="" name="{{column.getColumnRealName()}}" id="{{column.getColumnRealName()}}" value="{{column.getColumnValue()}}"/>
+	 	 </div>
+	    </div> 
+	  {% endif %}
+	{% if loop.index is divisible by(2) %}
+	 </div>
+	 <div class="aes-form-separator"></div>
+	{% endif %}
+	{% if (loop.last) and (loop.index is not divisible by(2)) %}
+	 </div>
+	 <div class="aes-form-separator"></div>
+	 {% endif %}
+   {% endfor %}
+  </div>
+  {% endblock mainfieldlist %}
+  {% block mainfieldlistafter %}
+  {% endblock mainfieldlistafter %} 
+  <div class="toolbar-box">
+	<div class="toolbar toolbar-l">
+	  <input type="submit" class="pointed button-jq" value="{{Text._('TPL_SUBMIT')}}" />
+	  <button type="reset" class="pointed reset-form button-jq" value="Reset">{{Text._('TPL_CLEAR')}}</button>
+	</div>
+  </div>
+ </fieldset>
+{% endblock mainfieldset %} 
+</form>

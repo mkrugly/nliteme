@@ -1,0 +1,109 @@
+{% block multiprogresbar %}
+<div class="minibar-container">
+	{% set text_alter = "" %}
+	<div class="minibar minibar-height-075em">
+		{% for k, v in val %}
+		  {% set text_alter =  Text._(k|upper) ~ ': ' ~ v ~ '% ' ~ text_alter %}
+		  <div class="minibar-progress minibar-color-{{loop.index}}" style="width: {{v}}%; z-index: {{loop.index}};"></div>
+		{% endfor %}
+	</div>
+    <div class="minibar-text">{{text_alter}}</div>
+</div>	
+{% endblock multiprogresbar %}
+
+{% block progresbar %}
+<div class="rate-progress-bar" style="position: relative;" data-val={{val|trim('%')}}>
+	<div class="rate-progress-bar-label" style="top:4px;font-weight:bold;left:50%;position:absolute;">
+		{{val}}
+	</div>	 
+</div>	
+{% endblock progresbar %}
+
+{% block tabquicklinks %}
+	{% if content['quicklinks'] is not empty %}
+		<td>
+		  <div class="quicklinks-bar">
+		   <ul>
+		   {% for quicklink in content['quicklinks'] %}
+			 <li>
+			 {% if quicklink == 'history' %}
+			   <a class="ui-icon ui-icon-script" href="{{record[quicklink]}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_HISTORY')}}"></a>
+			 {% elseif quicklink == 'filepath' %}
+			   <a class="ui-icon ui-icon-arrowreturnthick-1-s" href="{{record[quicklink]}}" title="{{Text._('TPL_GEN_CLICK_TO_DOWNLOAD')}}"></a>
+			 {% elseif quicklink == 'hlink' and record[quicklink] is not empty %}
+			   <a class="ui-icon ui-icon-extlink" href="{{record[quicklink]}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_EXT_LINK')}}"></a>
+			 {% elseif quicklink == 'details' and args is not empty %}
+			   {% set href_link = link.GetServerUrl() ~ link.GetScriptName() ~ '?' ~ link.GetModifiedQueryUrl(args) %}
+			   <a class="ui-icon ui-icon-document-b" style="width: 16px; height: 16px;" href="{{href_link}}" title="{{Text._('TPL_GEN_CLICK_TO_SEE_DETAILS')}}"></a>
+			 {% elseif quicklink == 'list' %}
+			  {% if content['list-quicklink_common'] is not empty  %}
+			     {% set list_link = content['list-quicklink_common'] %}
+			     {% set href_link = list_link.GetServerUrl() ~ list_link.GetScriptName() ~ '?' ~ list_link.GetModifiedQueryUrl(args) %}	  
+			     <a class="ui-icon ui-icon-newwin" style="width: 16px; height: 16px;" href="{{href_link}}" title="{{Text._('TPL_GEN_CLICK_TO_SHOW_COMPLETE_LIST')}}"></a>					   
+			   {% endif %}
+			 {% endif %}
+			 </li>
+		   {% endfor %}
+		   </ul>
+		  </div>
+		</td>
+	{% endif %}	
+{% endblock tabquicklinks %}
+
+{% block hlrtabtd %}
+	{% if record[column.getColumnRealName()] is not empty %}	
+		{% if column.is_showable() == true %}
+			{% set realname = column.getColumnRealName() %}
+			{% set inx = column.getColumnIndex() %}                         
+			{% set val = record[realname] %}
+			{% if column.is_predefined() == true %}
+				{% set val = column.getColumnPredefinedValuebyIndex(record[realname]) %}
+			{% endif %}
+
+			{% set href_link = link.GetServerUrl() ~ link.GetScriptName() ~ '?' ~ link.GetModifiedQueryUrl(args) %}
+			{% set fieldaction = content['fieldActions'][realname] %}
+			{% if record[fieldaction] is not empty %}
+				{% set href_link = record[fieldaction] %}
+			{% elseif (fieldaction is not empty) and (val != 0) and (val matches '/^\\d+$/') %}
+				{% set href_link = fieldaction ~ val %}
+			{% elseif inx is not empty %}
+				{% set inxval = record[inx] %}
+				{% if inxval is not empty %}
+					{% set detailaction = content['detailActions'][inx] %}
+					{% if detailaction is not empty %}
+						{% set href_link = link.GetServerUrl() ~ link.GetScriptName() ~ '?' ~ detailaction ~ '&' ~ inx ~ '=' ~ inxval %}
+					{% endif %} 
+				{% endif %}  
+			{% endif %}
+
+			{% if realname == 'extracolumn_2' and val == 0 %}
+				N/A
+			{% else %}
+				<a href="{{href_link}}">
+				{% if  (column.getValueType() == 'RELATIVE') and (val is iterable) %}
+					{% if usenopbar is defined %}
+						{{val}}					
+					{% else %}
+						{{ block('multiprogresbar', 'common_blocks.phtml') }}
+					{% endif %}
+				{% elseif (realname == 'passrate') or (column.getValueType() == 'RELATIVE') %}
+					{% if usenopbar is defined %}
+						{{val}}
+					{% else %}
+						{{ block('progresbar', 'common_blocks.phtml') }}
+					{% endif %}
+				{% elseif realname == 'tcverdict' %} 
+					{% set ver_inx = record[realname] %}
+					{% if ver_inx == 0 %}
+						<span style="display:none;">{{ver_inx}}</span><img src="./images/ok.png" style="float:none;display:block;" alt="{{val}}"/>
+					{% else %}
+						<span style="display:none;">{{ver_inx}}</span><img src="./images/nok.png" style="float:none;display:block;" alt="{{val}}"/>
+					{% endif %}
+				{% else %}
+					{{val}}
+				{% endif %}
+				</a>	
+			{% endif %}
+		{% endif %}
+	{% endif %}
+{% endblock hlrtabtd %}

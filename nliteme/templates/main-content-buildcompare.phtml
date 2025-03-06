@@ -1,0 +1,101 @@
+<div>
+ <div id="message-container">
+  {% if messages.getMessages()|length > 0 %}
+    <div id="message-container-messages">
+    <ul>
+    {% for message in messages.getMessages() %}
+	  <li><div class="message-info-text">{{message}}</div></li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+ </div>
+ {% if content['header']|length > 0 %}
+ <div style="overflow-x: auto;">
+	<table class="table-blue fill-parent table-blue-ext">  
+	  <thead>   
+		<tr>
+		  <th colspan={{content['header']|length}} class="placeholder">
+           <div class="toolbar-box">
+		    <label>{{Text._('BUILD_COMPARE_TABLE')}} {{Text._('LOADED')}} <span id="buildcomparetbody-counter" data-count="0"></span> {{Text._('ENTRIES')}}</label>
+           </div> 
+		  </th>
+		 {% for column in content['build'] %}
+		 <th class="rotate-45">
+			 <div><span><a href="{{column.getParam('action')}}" title="{{Text._('TPL_GEN_CLICK_TO_SEE_DETAILS')}}">{{Text._(column.getColumnRealName()|upper)}}</a></span></div>
+		 </th>
+		 {% endfor %}	 
+		</tr>
+		<tr>
+	     {% for column in content['header'] %}
+		  <th> 
+			{{Text._(column.getColumnRealName()|upper)}}
+		  </th>
+		 {% endfor %}
+		 {% if content['increment']|length > 0 %}	
+	      {% for column in content['increment'] %}
+		   <th colspan={{column.getColumnPredefinedValues()|length}}>
+			{{Text._(column.getColumnRealName()|upper)}}
+		   </th>
+		  {% endfor %}
+	     {% else %}
+		  <th colspan={{content['build']|length}}></th>		 
+		 {% endif %}
+		</tr>
+	  </thead>
+	  <tbody id="buildcomparetbody">
+	  </tbody>
+	  <tfoot id="buildcomparetbody-pre"><tr><td colspan="{{content['header']|length + content['build']|length}}"><div class="preloader" ><img src="./images/preloaderSmall.GIF" alt="loading gif" />{{Text._('TPL_LOADING')}}</div></td></tr></tfoot>
+	</table>
+	<script type="text/x-tmpl" id="tmpl-buildcomparetbody">
+      <tr> 
+	   {% for column in content['header'] %}
+	     {% set col = column.getColumnRealName() %}
+		 {% if column.getColumnIndex() is not empty %}
+		   {% set col = column.getColumnIndex() %}
+		 {% endif %}
+	     <td>{{'{% var i=o.'}}{{col}}{{'; %}'}}
+			 {% verbatim %}
+			 {%  if (i.link === undefined) { %}
+			    {%=i.value%}
+			 {% } else { %}
+			    <a href="{%=i.link%}"  title="click here to see details">
+				{%=i.value%}
+				</a>
+			 {% } %}
+			 {% endverbatim %}
+	     </td>
+	   {% endfor %}
+	   {% for column in content['build'] %}
+		 <td>{{'{% var i = o.b'}}{{column.getColumnIndex()}}{{'; %}'}}
+	      {% if content['compareby'] == 'tcverdict' %}
+{% verbatim %}
+{%  if (i === undefined) { %}
+<span>-</span>
+{% } else { %}
+<a href="{%=i.link%}"  title="click here to see details">
+{%  if (i.value == 0) { %}
+<img class="tooltip-dynamic" id="id_{%=i.id%}_" src="./images/ok.png" style="float:none;display:block;"/>
+{% } else { %}
+<img class="tooltip-dynamic" id="id_{%=i.id%}_" src="./images/nok.png" style="float:none;display:block;"/>			
+{% } %}
+</a>
+{% } %}
+{% endverbatim %}
+	      {% else %}
+{% verbatim %}		  
+{%  if (i === undefined) { %}
+<span>-</span>
+{% } else { %}
+<a class="tooltip-dynamic" id="id_{%=i.id%}_" href="{%=i.link%}"  title="click here to see details">{%=i.value%}</a>
+{% } %}
+{% endverbatim %}	   	   
+	      {% endif %}
+		 </td>
+	   {% endfor %}
+	  </tr>
+    </script>
+	<script class="json-link" type="text/javascript" data-container="buildcomparetbody" type="text/javascript" data-sort-main="{{content['sortmain']}}" data-sort-count="{{content['sortcount']}}" data-sort-iter="0" data-sort-step="40" data-json-link="{{link.GetServerUrl()}}{{link.GetScriptName()}}?action={{content['submitAction']}}" data-json-input="{{content['body']}}"></script>
+ </div>
+ {% endif %}
+</div>
