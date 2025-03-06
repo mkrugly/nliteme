@@ -1,4 +1,4 @@
-# Nliteme
+## Nliteme
 
 Nliteme (aka New Lite Test Management Engine) is an SQL database/PHP backend and Web GUI front-end based test management application optimized for collecting and presenting test execution results from automated regression test systems. It provides an easy RESTful API for uploading the data, allowing an integration “as is” with existing test systems and feeding data in almost no time as well as for an automated querying, searching, and filtering the uploaded data.
 
@@ -8,3 +8,32 @@ The configurable dashboard provides a quick overview of the latest testing activ
 
 Nliteme is a platform independent application and can be deployed on Unix, Linux, Mac Os X and Windows systems.
 
+## HowTos
+- [`Installation manual`](./doc/NlitemeInstallationGuide.pdf)
+- [`User Guide`](./doc/NlitemeUserGuide.pdf)
+
+## Screenshots
+
+- Dashboard
+![Dashboard](./img/NlitemeDashboard.png)
+
+- Test Results
+![Test Results](./img/NlitemeTestresultsView.png)
+
+- Test Results Filtering
+![Test Results Filtering](./img/NlitemeTestresultsFiltering.png)
+
+- Test Results Filtering
+![Test Results](./img/NlitemeTestresultsFiltering.png)
+
+- Build Compare
+![Build Compare](./img/NlitemeBuildCompareView.png)
+
+- HighLevelReport
+![HighLevelReport](./img/NlitemeHLR_FeatureView.png)
+
+- HighLevelReport Details
+![HighLevelReport Details](./img/NlitemeHLR_DetailsView.png)
+
+- HighLevelReport Details
+![HighLevelReport Details](./img/NlitemeHLR_DetailsView.png)
