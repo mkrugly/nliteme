@@ -1,12 +1,48 @@
-## Nliteme
+# Nliteme
 
-Nliteme (aka New Lite Test Management Engine) is an SQL database/PHP backend and Web GUI front-end based test management application optimized for collecting and presenting test execution results from automated regression test systems. It provides an easy RESTful API for uploading the data, allowing an integration “as is” with existing test systems and feeding data in almost no time as well as for an automated querying, searching, and filtering the uploaded data.
+**Nliteme** (short for *New Lite Test Management Engine*) is a platform-independent test management application featuring:
 
-The Web GUI front-end allows the user to quickly browse, search, compare the test results from different SW releases and provides efficient filtering option to quickly spot the problems in the tested SW and/or HW.
+- An **SQL database** and **PHP backend**
+- A **web-based GUI front-end**
+- A lightweight **RESTful API**
 
-The configurable dashboard provides a quick overview of the latest testing activities, the HighLevelReport view provides a detailed summary of the test results from different test lines and SW release and BuildCompare view, which can be useful for project management and planning.
+It is optimized for collecting, managing, and visualizing test execution results from **automated regression test systems**.
 
-Nliteme is a platform independent application and can be deployed on Unix, Linux, Mac Os X and Windows systems.
+---
+
+## Key Features
+
+### ✅ Easy RESTful API
+
+Seamlessly integrates with existing test systems *as-is* to:
+
+- Upload test execution results with minimal overhead
+- Automate queries, searches, and filtering of stored data
+
+### 🧭 Web GUI Front-End
+
+- Quickly browse, search, and compare test results across different software (SW) releases
+- Efficient filtering to help identify issues in tested software and/or hardware
+
+### 📊 Configurable Dashboard
+
+- Provides a quick overview of the latest testing activity
+
+### 📋 High-Level Report View
+
+- Summarizes test results across test lines, SW releases, and builds
+
+### 🔍 Build Compare View
+
+- Enables comparison of test results across builds  
+- Ideal for **project tracking** and **release planning**
+
+---
+
+## 🖥 Platform Compatibility
+
+Nliteme is **platform-independ**
+
 
 ## HowTos
 - [`Installation manual`](./doc/NlitemeInstallationGuide.pdf)
